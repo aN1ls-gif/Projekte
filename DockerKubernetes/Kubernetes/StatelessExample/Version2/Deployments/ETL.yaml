@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pyspark-etl-deployment
+  labels:
+    app: pyspark-project
+    generell_purpose: deployment 
+    specific_purpose: etl-deployment 
+    frontback: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pyspark-project
+      generell_purpose: app
+      specific_purpose: etl-script
+      frontback: backend
+  template: # this is simply everything from the pod yaml except the apiVersion and kind fields.
+    metadata:
+      name: pyspark-etl
+      labels:
+        app: pyspark-project
+        generell_purpose: app
+        specific_purpose: etl-script
+        frontback: backend
+    spec:
+      securityContext:
+      # For security reasons, I run the images as non-root users (implemented in the dockerfiles)
+      # However, that prevents me from writing data from my pods to the hostPath PVs.
+      # Therefore, I use these options to allow me to do that
+        runAsUser: 1000
+        runAsGroup: 1000
+
+      initContainers:
+        - name: permission-fixer
+          securityContext:
+            runAsUser: 0 ## Run as root to change permissions
+          image: ubuntu:22.04
+          command:
+            ["/bin/bash", "-c", "chown -R 1000:1000 /app/StreamData && chmod -R 755 /app/StreamData"]
+          volumeMounts:
+            - name: main-mount
+              mountPath: /app/StreamData
+              
+      containers:
+        - name: pyspark-etl-api # Name of the container once started on the pod
+          image: an1ls/stream_etl:ver_2.0 # The image I want to be used
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /app/StreamData/Target/Entries # the container-path to the dir containg the volume
+              name: main-mount # how I want to name that volume
+              subPath: DeltaTable
+            - mountPath: /app/StreamData/ScrapeSource
+              name: main-mount
+              subPath: ScrapeSource
+            - mountPath: /app/StreamData/DeltaArchive
+              name: main-mount
+              subPath: DeltaArchive
+            - mountPath: /app/StreamData/DeltaCheckpoint
+              name: main-mount
+              subPath: DeltaCheckpoint
+
+      volumes:
+        # Define to which PVC the volume should be connected
+        - name: main-mount
+          persistentVolumeClaim:
+            claimName: main-mount-pvc

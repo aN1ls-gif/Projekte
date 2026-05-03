@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  serviceName: sql-service # must match the naem of the headless service
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        ports:
+        - containerPort: 3306
+          name: mysql
+        env:
+        # Root-passoword. Automatically craeted the root-user "root"
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sql-secret
+              key: sql-root-password
+
+        volumeMounts:
+        - mountPath: /var/lib/mysql 
+          name: sql-persistent
+        - mountPath: /configs
+          name: config
+          readOnly: true
+        - mountPath: /secrets
+          name: secret
+          readOnly: true
+      # For now, attempt to use only ephemereal volumes. Can still switch to using StorageClass and PVC later on
+      volumes:
+        # - name: mysql-storage
+        #   persistentVolumeClaim:
+        #     claimName: sql-persistent
+        - name: secret
+          secret:
+            secretName: sql-secret
+        - name: config
+          configMap:
+            name: sql-configmap
+
+  volumeClaimTemplates:
+  - metadata:
+      name: sql-persistent
+    spec:
+      accessModes: [ReadWriteOnce]
+      resources:
+        requests:
+          storage: 500Mi
+      storageClassName: simple-storage-class
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: sql-service
+  labels:
+    app: simple-interactive-table
+spec:
+  selector:
+    app: mysql
+  # type: ClusterIP and clusterIP: None make this a headless service.
+  type: ClusterIP
+  clusterIP: None 
+  ports:
+    - port: 3306 
+      targetPort: mysql
+
+

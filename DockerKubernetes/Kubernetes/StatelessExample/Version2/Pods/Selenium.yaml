@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: selenium-chrome-server
+  labels:
+    app: pyspark-project
+    generell_purpose: app
+    specific_purpose: scraping-server
+    frontback: backend
+spec:
+  containers:
+  - name: selenium-api # Name of the container once started on the pod
+    image: selenium/standalone-chromium:latest # The image I want to be used
+    ports:
+    - containerPort: 4444
+      name: webdriver-api
+    - containerPort: 7900 
+      name: vnc-viewer
+    
+# does not need volumes or mounts. Exists for Scrapper to be able to scrape

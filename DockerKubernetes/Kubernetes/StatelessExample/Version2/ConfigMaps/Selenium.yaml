@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: selenium-server-configs
+data:
+  se_node_session_timeout: "1200"
+  se_session_request_timeout: "1200"

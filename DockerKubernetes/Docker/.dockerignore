@@ -1,0 +1,10 @@
+.ipynb_checkpoints
+.streamlit
+.dockerignore
+Dockerfiles
+StreamData/ExampleData
+StreamData/OldDeltaCheckpoints
+src/.spyproject
+src/readMe.txt
+src/Testing.py
+

@@ -1,0 +1,6 @@
+FROM python:3.11-slim AS builder
+WORKDIR /app
+COPY . /app/
+COPY requirements/Create_Database.txt .
+RUN python -m pip install -r Create_Database.txt
+CMD ["python" , "src/Create_Database.py"]

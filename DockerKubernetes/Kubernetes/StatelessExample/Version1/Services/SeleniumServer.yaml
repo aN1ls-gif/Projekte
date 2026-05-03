@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium-web-service
+  labels:
+    app: pyspark-project
+    generell_purpose: service
+    specific_purpose: selenium-access
+    frontback: backend
+spec:
+  selector:
+    app: pyspark-project
+    generell_purpose: app
+    specific_purpose: scraping-server
+    frontback: backend
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80 # The port exposed to the other cluster components; should not be the same as the targetPort/ containerPort
+      targetPort: webdriver-api # The port exposed that the component listens to. Can be just the port number or the custom-name of the port if one has been assigned

@@ -1,0 +1,9 @@
+FROM python:3.11-slim AS builder
+WORKDIR /app
+COPY . /app/
+COPY requirements/Create_Dashboard.txt .
+RUN python -m pip install -r Create_Dashboard.txt
+# RUN sudo apt-get install python-mysqldb
+EXPOSE 80
+HEALTHCHECK CMD curl --fail http://localhost:80/_stcore/health
+ENTRYPOINT ["python", "-m", "streamlit", "run", "src/Dashboard.py", "--server.port=80", "--server.address=0.0.0.0"]

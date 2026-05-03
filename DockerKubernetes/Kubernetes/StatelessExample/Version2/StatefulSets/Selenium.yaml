@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium-headless-service
+  labels:
+    app: pyspark-project
+    generell_purpose: service
+    specific_purpose: selenium-access
+    frontback: backend
+spec:
+  selector:
+    app: pyspark-project
+    generell_purpose: app
+    specific_purpose: scraping-server
+    frontback: backend
+  # type: ClusterIP and clusterIP: None make this a headless service.
+  type: ClusterIP
+  clusterIP: None 
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80 # The port exposed to the other cluster components; should not be the same as the targetPort/ containerPort
+      targetPort: webdriver-api # The port exposed that the component listens to. Can be just the port number or the custom-name of the port if one has been assigned
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet # Deployment: Stateless. StatefulSet: Statefull
+metadata:
+  name: selenium-chrome-server-deployment
+  labels:
+    app: pyspark-project
+    generell_purpose: deployment
+    specific_purpose: selenium-deployment
+    frontback: backend
+spec:
+  replicas: 2
+  minReadySeconds: 10 # Pod should be running for at least 10 seconds without any container crashing
+  selector:
+    matchLabels:
+      app: pyspark-project
+      generell_purpose: app
+      specific_purpose: scraping-server
+      frontback: backend
+  template:
+    # this is simply everything from the pod yaml except the apiVersion and kind fields.
+    metadata:
+      name: selenium-chrome-server
+      labels:
+        app: pyspark-project
+        generell_purpose: app
+        specific_purpose: scraping-server
+        frontback: backend
+    spec:
+      containers:
+      - name: selenium-api # Name of the container once started on the pod
+        image: selenium/standalone-chromium:latest # The image I want to be used
+        env:
+          - name: SE_NODE_SESSION_TIMEOUT # wihtout any adjustments, selenium times out before the first scraper request can be made
+            valueFrom:
+              configMapKeyRef:
+                name: selenium-server-configs # name of the configmap, not the volume mount
+                key: se_node_session_timeout
+          - name: SE_SESSION_REQUEST_TIMEOUT
+            valueFrom:
+              configMapKeyRef:
+                name: selenium-server-configs
+                key: se_session_request_timeout
+          
+        ports:
+        - containerPort: 4444
+          name: webdriver-api
+        - containerPort: 7900 
+          name: vnc-viewer
+
+        volumeMounts:
+        - name: config # Not a storage volume but a configmap
+          mountPath: "/config"
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: selenium-server-configs

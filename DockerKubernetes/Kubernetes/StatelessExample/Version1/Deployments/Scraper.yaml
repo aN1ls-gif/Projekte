@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: selenium-scraper-deployment
+  labels:
+    app: pyspark-project
+    generell_purpose: deployment
+    specific_purpose: scraping-deployment
+    frontback: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pyspark-project
+      generell_purpose: app
+      specific_purpose: scraping-script
+      frontback: backend
+  template: # this is simply everything from the pod yaml except the apiVersion and kind fields.
+    metadata:
+      name: selenium-scraper
+      labels:
+        app: pyspark-project
+        generell_purpose: app
+        specific_purpose: scraping-script
+        frontback: backend
+    spec:
+      securityContext:
+          # For security reasons, I run the images as non-root users (implemented in the dockerfiles)
+          # However, that prevents me from writing data from my pods to the hostPath PVs.
+          # Therefore, I use these options to allow me to do that
+          runAsUser: 1000
+          runAsGroup: 1000
+
+      initContainers:
+        - name: permission-fixer
+          securityContext:
+            runAsUser: 0 ## Run as root to change permissions
+          image: ubuntu:22.04
+          command:
+            ["/bin/bash", "-c", "chown -R 1000:1000 /app/StreamData && chmod -R 755 /app/StreamData"]
+          volumeMounts:
+            - name: main-mount
+              mountPath: /app/StreamData
+      containers:
+        - name: selenium-scraping-api # Name of the container once started on the pod
+          imagePullPolicy: Always
+          image: an1ls/stream_scrape:ver_2.0 # The image I want to be used
+          env:
+            - name: SELENIUM_REMOTE_URL
+              value: "http://selenium-web-service:80/wd/hub"
+            - name: IMPLICIT_WAIT_TIME
+              value: "90"
+            - name: RESTART_WAIT
+              value: "90"
+          volumeMounts:
+            - mountPath: /app/StreamData/Target/Entries
+              name: main-mount
+              subPath: DeltaTable
+            - mountPath: /app/StreamData/ScrapeSource
+              name: main-mount
+              subPath: ScrapeSource
+            - mountPath: /app/StreamData/ScrapingCheckpoint
+              name: main-mount
+              subPath: ScrapingCheckpoint  
+      volumes:
+        # Define to which PVC the volume should be connected
+        - name: main-mount
+          persistentVolumeClaim:
+            claimName: main-mount-pvc
+          

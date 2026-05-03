@@ -1,0 +1,142 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard-service
+  labels:
+    app: mysql
+spec:
+  selector:
+    app: mysql
+  type: NodePort
+  ports:
+    - name: dashboard-service-port
+      protocol: TCP
+      port: 80 # The port exposed to the other cluster components; should not be the same as the targetPort/ containerPort
+      targetPort: board-port # The port exposed that the component listens to. Can be just the port number or the custom-name of the port if one has been assigned
+      nodePort: 31000 # which port is exposed to everything outside of the cluster
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard-deployment
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template: # this is simply everything from the pod yaml except the apiVersion and kind fields.
+    metadata:
+      name: bashbaord
+      labels:
+        app: mysql
+    spec:
+      initContainers:
+      - name: mysql-setup
+        image: an1ls/my_sql_init:latest
+        imagePullPolicy: Always
+        # volumeMounts:
+        #   - mountPath: /config
+        #     name: config
+        #     readOnly: true
+        #   - mountPath: /secrets
+        #     name: secret
+        #     readOnly: true
+        # volumeMounts:
+        # - mountPath: /var/lib/mysql 
+        #   name: mysql-storage
+        env:
+        - name: MYSQL_DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: sql-secret
+              key: sql-root-username
+        - name: MYSQL_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sql-secret
+              key: sql-root-password
+        - name: MYSQL_DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: sql-configmap
+              key: sql-database-host
+        - name: MYSQL_DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: sql-configmap
+              key: sql-database-name
+        - name: MYSQL_DATABASE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: sql-configmap
+              key: sql-database-port
+        - name: MYSQL_DATABASE_TABLE
+          valueFrom:
+            configMapKeyRef:
+              name: sql-configmap
+              key: sql-databae-table
+
+
+      containers:
+      - name: streamlit-dashboard-api # Name of the container once started on the pod
+        image: an1ls/my_sql_dashboard:latest # The image I want to be used
+        imagePullPolicy: Always
+        # volumeMounts:
+        #   - mountPath: /config
+        #     name: config
+        #     readOnly: true
+        #   - mountPath: /secrets
+        #     name: secret
+        #     readOnly: true
+        ports:
+        - containerPort: 80 # which Ports the container listens to
+          name: board-port
+        # volumeMounts:
+        # - mountPath: /var/lib/mysql 
+        #   name: mysql-storage
+        env:
+        - name: MYSQL_DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: sql-secret
+              key: sql-root-username
+        - name: MYSQL_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sql-secret
+              key: sql-root-password
+        - name: MYSQL_DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: sql-configmap
+              key: sql-database-host
+        - name: MYSQL_DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: sql-configmap
+              key: sql-database-name
+        - name: MYSQL_DATABASE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: sql-configmap
+              key: sql-database-port
+        - name: MYSQL_DATABASE_TABLE
+          valueFrom:
+            configMapKeyRef:
+              name: sql-configmap
+              key: sql-databae-table
+
+      volumes:
+      # - name: mysql-storage
+      #   persistentVolumeClaim:
+      #     claimName: sql-persistent-mysql-0
+      - name: config
+        configMap:
+          name: sql-configmap
+      - name: secret
+        secret:
+          secretName: sql-secret

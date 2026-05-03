@@ -1,0 +1,6 @@
+.dockerignore
+build_docker.sh
+build_kubernetes.sh
+Yaml_files
+src/.spyproject
+Dockerfiles

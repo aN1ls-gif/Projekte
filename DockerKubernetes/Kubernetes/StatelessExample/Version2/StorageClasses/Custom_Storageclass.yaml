@@ -1,0 +1,14 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: simple-storage-class
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+  # labels:
+  #     addonmanager.kubernetes.io/mode: Reconcile # what does this do?
+provisioner: k8s.io/minikube-hostpath
+reclaimPolicy: Delete
+allowVolumeExpansion: false # not possible for hostpath
+# mountOptions: not used as it only suppors (is)csi and nfs
+volumeBindingMode: Immediate 
+# parameters: not used for hostPath

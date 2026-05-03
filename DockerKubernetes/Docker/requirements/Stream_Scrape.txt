@@ -1,0 +1,4 @@
+requests
+selenium
+python-dateutil
+tqdm

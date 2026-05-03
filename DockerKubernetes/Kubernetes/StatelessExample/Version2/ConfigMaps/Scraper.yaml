@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: selenium-scraper-configs
+data:
+  implicit_wait_time: "90"
+  restart_wait: "0" # for debudding purposes. If there is an error in the skript, this is how many seconds the script will wait before terminating. Giives time to look in the logs and enter the contaiern-shell to determine the source of the error
+  selenium_remote_url: "http://selenium-web-service:80/wd/hub" # DNS of the selenium server
+

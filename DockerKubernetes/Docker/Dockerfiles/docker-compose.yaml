@@ -1,0 +1,60 @@
+services:
+  selenium:
+    image: selenium/standalone-chromium:latest # For AMD64
+#    image: seleniarm/standalone-chromium:latest # For ARM64
+    container_name: selenium-container
+    restart: unless-stopped
+    shm_size: 2g
+    ports:
+      - "4444:4444"  # Selenium WebDriver API
+      - "7900:7900"  # VNC Viewer
+    environment:
+      - SE_NODE_MAX_SESSIONS=1
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_NODE_SESSION_TIMEOUT=300
+      - SE_NODE_GRID_URL=http://localhost:4444
+      - SE_NODE_DETECT_DRIVERS=false
+    networks:
+      - Spark_Dashboard
+  Scraper:
+    image: stream_scrape:ver_1.0
+    working_dir: /app
+    volumes:
+      - DeltaTable:/app/StreamData/Target/Entries
+      - ScrapeSource:/app/StreamData/Source
+      - ScrapeArchive:/app/StreamData/ArchiveData
+      - ScrapeCheckpoint:/app/StreamData/ScrapeCheckpoint
+    networks:
+      - Spark_Dashboard
+
+  ETL:
+    image: stream_etl:ver_1.0
+    working_dir: /app
+    volumes:
+      - DeltaTable:/app/StreamData/Target/Entries
+      - DeltaCheckpoint:/app/StreamData/CheckPoint
+      - ScrapeSource:/app/StreamData/Source
+      - DeltaArchive:/app/StreamData/Archive
+    networks:
+      - Spark_Dashboard
+
+  Dashboard:
+    image: stream_dashboard:ver_1.0
+    ports:
+      - 8080:80
+    working_dir: /app
+    volumes:
+      - DeltaTable:/app/StreamData/Target/Entries
+    networks:
+      - Spark_Dashboard
+
+volumes:
+  DeltaTable:
+  DeltaArchive:
+  DeltaCheckpoint:
+  ScrapeSource:
+  ScrapeArchive:
+  ScrapeCheckpoint:
+
+networks:
+  Spark_Dashboard:

@@ -1,0 +1,26 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: simple-storage-class
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+provisioner: k8s.io/minikube-hostpath
+reclaimPolicy: Retain # critical for database storage
+allowVolumeExpansion: false # not possible for hostpath
+volumeBindingMode: Immediate # WaitForFirstConsumer
+# ---
+
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: sql-persistent
+#   labels:
+#     app: sql-table
+# spec: 
+#   accessModes:
+#     - ReadWriteOnce 
+#   volumeMode: Filesystem 
+#   resources:
+#     requests:
+#       storage: 500Mi
+#   storageClassName: simple-storage-class

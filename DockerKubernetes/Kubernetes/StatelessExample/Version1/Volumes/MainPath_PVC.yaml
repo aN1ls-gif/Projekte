@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: main-mount-pvc
+  labels:
+    app: pyspark-project
+    generell_purpose: persistent-volume-claim
+    specific_purpose: mount-main-dir
+spec: 
+  accessModes:
+    - ReadWriteOnce 
+  volumeMode: Filesystem 
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: "" 
+  selector:
+    matchLabels:
+      specific_purpose: mount-main-dir #

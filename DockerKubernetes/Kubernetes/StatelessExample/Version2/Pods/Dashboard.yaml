@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: streamlit-dashboard
+  labels:
+    app: pyspark-project
+    generell_purpose: app
+    specific_purpose: dashboard
+    frontback: frontend
+spec:
+  containers:
+  - name: streamlit-dashboard-api # Name of the container once started on the pod
+    image: an1ls/stream_dashboard:ver_2.0 # The image I want to be used
+    ports:
+    - containerPort: 80 # which Ports the container listens to
+      name: board-port
+    volumeMounts:
+      - mountPath: /app/StreamData # the container-path to the dir containg the volume
+        name: main-mount # how I want to name that volume
+        subPath: Target/Entries
+  volumes:
+    # Define to which PVC the volume should be connected
+    - name: main-mount
+      persistentVolumeClaim:
+        claimName: main-mount-pvc

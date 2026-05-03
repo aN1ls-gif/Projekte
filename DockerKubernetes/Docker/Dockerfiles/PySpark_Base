@@ -1,0 +1,54 @@
+# Dockerfiles/PySpark_Base
+
+# [Stage 1: Building the dependencies]
+# python base image
+FROM python:3.11-slim AS builder
+WORKDIR /app
+
+# 2. Prepare for non-root user
+RUN useradd --create-home --shell /bin/bash appuser
+# RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+
+
+
+# Set environment variables for Spark and Java
+# my scripts are based on 4.0.1 .  I hope, the small difference does not cause issues
+ENV SPARK_VERSION=4.0.2 
+ENV HADOOP_VERSION=3
+ENV JAVA_VERSION=21
+ENV PY4J_VERSION=0.10.9.9
+
+ENV JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
+ENV PATH="${JAVA_HOME}/bin/:${PATH}"
+
+ENV SPARK_HOME="/home/spark"
+ENV PATH="${SPARK_HOME}/bin:${PATH}"
+
+# Install necessary packages and dependencies
+RUN apt-get update && apt-get install -y \
+    "openjdk-${JAVA_VERSION}-jre-headless" \
+    curl \
+    wget \
+    vim \
+    sudo \
+    whois \
+    ca-certificates-java \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# download spark, unzip it and put it in its directory
+RUN SPARK_DOWNLOAD_URL="https://dlcdn.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz" \
+    && wget --verbose -O apache-spark.tgz "${SPARK_DOWNLOAD_URL}" \
+    && mkdir -p /home/spark \
+    && tar -xf apache-spark.tgz -C /home/spark --strip-components=1 \
+    && rm apache-spark.tgz
+
+
+
+ENV PYTHONPATH="${SPARK_HOME}/python/:$PYTHONPATH"
+# py4j depends on the spark version. Fro example, in 4.0.1 it is py4j-0.10.9.9-src.zip
+ENV PYTHONPATH="${SPARK_HOME}/python/lib/py4j-${PY4J_VERSION}-src.zip:$PYTHONPATH" 
+
+
+COPY requirements/PySpark_Base.txt .
+RUN python -m pip install -r PySpark_Base.txt

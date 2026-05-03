@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: delta-table-check
+  labels:
+    app: pyspark-project
+    generell_purpose: deployment
+    specific_purpose: dashboard-test
+    frontback: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pyspark-project
+      generell_purpose: app
+      specific_purpose: dashboard-test
+      frontback: frontend
+  template: # this is simply everything from the pod yaml except the apiVersion and kind fields.
+    metadata:
+      name: streamlit-dashboard
+      labels:
+        app: pyspark-project
+        generell_purpose: app
+        specific_purpose: dashboard-test
+        frontback: frontend
+    spec:
+      containers:
+        - name: table-check-api # Name of the container once started on the pod
+          image: an1ls/table_test:ver_1.0 # The image I want to be used
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80 # which Ports the container listens to
+            name: board-port
+          volumeMounts:
+            - mountPath: /app/StreamData/Target/Entries # the container-path to the dir containg the volume
+              name: main-mount # how I want to name that volume
+              subPath: DeltaTable
+      volumes:
+        # Define to which PVC the volume should be connected
+        - name: main-mount
+          persistentVolumeClaim:
+            claimName: main-mount-pvc

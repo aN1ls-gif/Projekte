@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sql-configmap
+data:
+# because I implemented a headless service, I must directly connect to the pod
+  sql-database-host: sql-service # "mysql-0.sql-service.default.svc.cluster.local" # DNS of pod from stateful set
+  sql-database-name: DatabaseEntries
+  sql-databae-table: SimpleTable
+  sql-database-port: "3306" # port of the pod, not of the headless service
