@@ -1,0 +1,4 @@
+__main__ : INFO:20  2025-10-12 10:44:28,317    Loggers created 
+__main__ : INFO:20  2025-10-12 10:44:28,332    Using CPU 
+__main__ : INFO:20  2025-10-12 10:44:33,847    Start Training at epoch 1 
+__main__ : INFO:20  2025-10-12 13:17:53,728    Start Training at epoch 16 
