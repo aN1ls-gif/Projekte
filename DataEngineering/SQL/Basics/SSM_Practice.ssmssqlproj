@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<SqlWorkbenchSqlProject xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="SSM_Practice">
+  <Items>
+    <LogicalFolder Name="Verbindungen" Type="2" Sorted="true">
+      <Items>
+        <ConnectionNode Name="TOWERPC\SQLEXPRESS:TOWERPC\Nils">
+          <Created>2025-10-08T14:00:16.8178413+02:00</Created>
+          <Type>SQL</Type>
+          <Server>TOWERPC\SQLEXPRESS</Server>
+          <UserName />
+          <Authentication>Windows-Authentifizierung</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>True</TrustServerCertificate>
+          <HostNameInServerCertificate />
+          <EncryptionOption>True</EncryptionOption>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName />
+        </ConnectionNode>
+      </Items>
+    </LogicalFolder>
+    <LogicalFolder Name="Abfragen" Type="0" Sorted="true">
+      <Items>
+        <FileNode Name="Tutorial 0 - Reset Project.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 0 - Reset Project.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 1 - Create Tables.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 1 - Create Tables.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 10 - Union.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 10 - Union.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 11 - Joins.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 11 - Joins.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 12 - Nested Queries.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 12 - Nested Queries.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 13 - On Delete.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 13 - On Delete.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 14 - Triggers.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 14 - Triggers.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 15 - ER Diagram.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 15 - ER Diagram.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 2 - Insert Data.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 2 - Insert Data.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 3 - Constraints.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 3 - Constraints.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 4 - Update and delete.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 4 - Update and delete.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 5 - Basic Queries.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 5 - Basic Queries.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 6 - Company Database.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 6 - Company Database.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 7 - More Basic Queries.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 7 - More Basic Queries.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 8 - Functions.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 8 - Functions.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Tutorial 9 - Wildcards.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TOWERPC\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TOWERPC\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Tutorial 9 - Wildcards.sql</FullPath>
+        </FileNode>
+      </Items>
+    </LogicalFolder>
+    <LogicalFolder Name="Sonstiges" Type="3" Sorted="true">
+      <Items />
+    </LogicalFolder>
+  </Items>
+</SqlWorkbenchSqlProject>

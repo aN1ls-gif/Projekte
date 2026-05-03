@@ -1,0 +1,21 @@
+-- ER = Entity Relationship
+
+-- Company Data Reqiurements
+-- Company is organized into branches. Each branch has a unique number, a name and a particular employee wo maneges it.
+-- Company makes money by seling to clients. Each client has unqiue name and unique number to identify it.
+-- Each company employee has a name, birthday, sex, salary and unqiue number. 
+-- Employee can wark for one branch at a time and each branch will be managed by one of the employees that workes there and the date, when they started as the manager.
+-- Employee can act as supervisor for other employees at same or different branch. An employee can have at most one supervisor.
+-- Branch may handle a number of clients, each having a name and unqiue number. A client can only be handled by one branch at a time.
+--  Employees can work with clients controlled by their branch to sell them stuff. If neccessary, multiple employees can work with same client. Want to keep track which employee sells how much to the clients they work with.
+-- Many branches need to work witch suppliers for inventory. Each supplier has name and type of product. Single supplier can sell to multiple branches.
+
+-- STEP 1: Create regular entities tables
+-- STEP 2: Create weak entities tables
+-- STEP 3: Mapping of Binary 1:1 Relationship types.
+-- If only one Entity in this relationship has a total participation, it will be the table containing the foreign key
+-- If both are the same, it doesn't matter
+-- Step 4: Mappring of binary 1:N relationships
+-- The Entity with the N on its side will contain the foreign key of the entity with the N on its side
+-- Step 5: Mapping of Binary N:M relatioship types.
+-- A new table is created with a primary key that is a combination of bith entities primary keys. (Compound key)

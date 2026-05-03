@@ -1,0 +1,82 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\flash\\Desktop\\Jobvorbereitungen\\Projekte\\SQL\\Basics\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C0258A0D-1B2B-6E85-A32E-1E50A8B8EAE5}|SSM_Practice.ssmssqlproj|C:\\Users\\flash\\Desktop\\Jobvorbereitungen\\Projekte\\SQL\\Basics\\Tutorial 2 - Insert Data.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{C0258A0D-1B2B-6E85-A32E-1E50A8B8EAE5}|SSM_Practice.ssmssqlproj|solutionrelative:Tutorial 2 - Insert Data.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0258A0D-1B2B-6E85-A32E-1E50A8B8EAE5}|SSM_Practice.ssmssqlproj|C:\\Users\\flash\\Desktop\\Jobvorbereitungen\\Projekte\\SQL\\Basics\\Tutorial 4 - Update and delete.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{C0258A0D-1B2B-6E85-A32E-1E50A8B8EAE5}|SSM_Practice.ssmssqlproj|solutionrelative:Tutorial 4 - Update and delete.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0258A0D-1B2B-6E85-A32E-1E50A8B8EAE5}|SSM_Practice.ssmssqlproj|C:\\Users\\flash\\Desktop\\Jobvorbereitungen\\Projekte\\SQL\\Basics\\Tutorial 1 - Create Tables.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{C0258A0D-1B2B-6E85-A32E-1E50A8B8EAE5}|SSM_Practice.ssmssqlproj|solutionrelative:Tutorial 1 - Create Tables.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0258A0D-1B2B-6E85-A32E-1E50A8B8EAE5}|SSM_Practice.ssmssqlproj|C:\\Users\\flash\\Desktop\\Jobvorbereitungen\\Projekte\\SQL\\Basics\\Tutorial 14 - Triggers.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{C0258A0D-1B2B-6E85-A32E-1E50A8B8EAE5}|SSM_Practice.ssmssqlproj|solutionrelative:Tutorial 14 - Triggers.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{956e1b22-878b-499b-ac5c-2705c05370ff}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Tutorial 2 - Insert Data.sql - TOWERPC\\SQLEXPRESS.master (TOWERPC\\Nils (85))",
+              "DocumentMoniker": "C:\\Users\\flash\\Desktop\\Jobvorbereitungen\\Projekte\\SQL\\Basics\\Tutorial 2 - Insert Data.sql",
+              "RelativeDocumentMoniker": "Tutorial 2 - Insert Data.sql",
+              "ToolTip": "Tutorial 2 - Insert Data.sql - TOWERPC\\SQLEXPRESS.master (TOWERPC\\Nils (85))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2025-11-17T08:09:03.677Z",
+              "EditorCaption": " - TOWERPC\\SQLEXPRESS.master (TOWERPC\\Nils (85))"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Tutorial 4 - Update and delete.sql - TOWERPC\\SQLEXPRESS.master (TOWERPC\\Nils (86))",
+              "DocumentMoniker": "C:\\Users\\flash\\Desktop\\Jobvorbereitungen\\Projekte\\SQL\\Basics\\Tutorial 4 - Update and delete.sql",
+              "RelativeDocumentMoniker": "Tutorial 4 - Update and delete.sql",
+              "ToolTip": "Tutorial 4 - Update and delete.sql - TOWERPC\\SQLEXPRESS.master (TOWERPC\\Nils (86))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2025-11-04T09:25:30.685Z",
+              "EditorCaption": " - TOWERPC\\SQLEXPRESS.master (TOWERPC\\Nils (86))"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Tutorial 1 - Create Tables.sql - TOWERPC\\SQLEXPRESS.master (TOWERPC\\Nils (76))",
+              "DocumentMoniker": "C:\\Users\\flash\\Desktop\\Jobvorbereitungen\\Projekte\\SQL\\Basics\\Tutorial 1 - Create Tables.sql",
+              "RelativeDocumentMoniker": "Tutorial 1 - Create Tables.sql",
+              "ToolTip": "Tutorial 1 - Create Tables.sql - TOWERPC\\SQLEXPRESS.master (TOWERPC\\Nils (76))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2025-11-03T12:56:32.252Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Tutorial 14 - Triggers.sql - TOWERPC\\SQLEXPRESS.master (TOWERPC\\Nils (52))",
+              "DocumentMoniker": "C:\\Users\\flash\\Desktop\\Jobvorbereitungen\\Projekte\\SQL\\Basics\\Tutorial 14 - Triggers.sql",
+              "RelativeDocumentMoniker": "Tutorial 14 - Triggers.sql",
+              "ToolTip": "Tutorial 14 - Triggers.sql - TOWERPC\\SQLEXPRESS.master (TOWERPC\\Nils (52))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2025-10-12T09:45:17.638Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
