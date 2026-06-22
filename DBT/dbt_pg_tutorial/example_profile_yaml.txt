@@ -1,0 +1,14 @@
+Real file in ~/.DBT/profiles.yaml
+
+dbt_pg_tutorial:
+  outputs:
+    dev:
+      dbname: dbt_tutorial # Name of teh databse in psql I want to connect to
+      host: 127.0.0.1 # hostname / ip-address (127.0.0.1 = localhost)
+      pass: dbt_password # Password for the database as set in psql
+      port: 5432 # PostgreSQL port as set in the setup
+      schema: Analytics # Schema I want to put my output-tables in
+      threads: 4
+      type: postgres
+      user: dbt_user # Username for the database as set in psql
+  target: dev

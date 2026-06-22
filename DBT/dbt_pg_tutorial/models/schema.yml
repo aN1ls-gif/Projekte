@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: stg_customers #name of the sql file (without file-type)
+    description: "Cleaned customers from raw.customers"
+    columns: # columns I want to test or do otehr stuff with
+      - name: customer_id
+        tests: [not_null, unique]
+      - name: email
+        tests: [not_null]
+
+  - name: stg_orders
+    description: "Cleaned orders from raw.orders"
+    columns:
+      - name: order_id
+        tests: [not_null, unique]
+      - name: customer_id
+        tests: [not_null]
+
+  - name: stg_payments
+    description: "Cleaned payments from raw.payments"
+    columns:
+      - name: payment_id
+        tests: [not_null, unique]
+      - name: order_id
+        tests: [not_null]
+
+  - name: int_order_payments
+    description: "Aggregated payments per order"
+    columns:
+      - name: order_id
+        tests: [not_null, unique]
+
+  - name: mart_dim_customers
+    description: "Customer dimension"
+    columns:
+      - name: customer_id
+        tests: [not_null, unique]
+
+  - name: mart_fct_orders
+    description: "Order fact table with payments info"
+    columns:
+      - name: order_id
+        tests: [not_null, unique]
+      - name: customer_id
+        tests: [not_null]

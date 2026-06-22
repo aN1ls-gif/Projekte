@@ -10,13 +10,13 @@ tensor_size = 32
 class Hyperparameters:
     ###### In Model
     lr = 1e-4
-    l2 = 1e-6
-    lr_decay_gamma = 0.5
+    l2 = 1e-5
+    lr_decay_gamma = 0.1
     lr_decay_stepsize = 5
     lr_decay_threshold = 1e-3
     lr_decay_parameter = "train_loss"
-    label_smoothing = 0
-    similarity_eps = 1e-6
+    label_smoothing = 0.1
+    similarity_eps = 1e-10
 
     ## Outside of model
     # gradient_accumulation_batches = 10
@@ -26,6 +26,7 @@ class Hyperparameters:
     earlyStopping_patience = 25
     checkPoint_Path = f"Training_Progress/Checkpoints/{Project_Name}"
     checkPoint_FilenameBase = "TwoTowerRetrieval"
+
 
 
 
@@ -70,7 +71,7 @@ class Linear_Block(nn.Module):
             self.activ_f = nn.ReLU()
             for layer in [self.fc1, self.fc2, self.skip]:
                 if isinstance(layer, nn.Linear):
-                    nn.init.kaiming_uniform(layer.weight, mode='fan_in', nonlinearity='relu')
+                    nn.init.kaiming_uniform_(layer.weight, mode='fan_in', nonlinearity='relu')
         elif activ == "tanh":
             self.activ_f = nn.Tanh()
             for layer in [self.fc1, self.fc2, self.skip]:
@@ -106,17 +107,21 @@ class Tower(nn.Module):
 
         # self.compression = nn.AvgPool1d(kernel_size = compressed_by, stride = compressed_by)
 
-        self.fc1 = Linear_Block(in_nodes, 512)
-        self.fc2 = Linear_Block(512, 256)
-        self.out = nn.Linear(256, out_nodes)
-        # self.rnn = nn.RNN(256, out_nodes,  num_layers=2, nonlinearity='tanh', dropout=0.2)
+        self.skip = nn.Linear(1024, out_nodes)
+        self.fc1 = Linear_Block(in_nodes, 1024)
+        self.fc2 = Linear_Block(1024, 768)
+        self.fc3 = Linear_Block(768, 512)
+        self.fc4 = Linear_Block(512, 384)
+        self.out = nn.Linear(384, out_nodes)
 
     def forward(self, x):
         # x = self.compression(x)
         x = self.fc1(x)
+        skip = self.skip(x)
         x = self.fc2(x)
-        x = self.out(x)
-        # x, hidden = self.rnn(x)
+        x = self.fc3(x)
+        x = self.fc4(x)
+        x = self.out(x) + skip
 
         return x
 
@@ -128,18 +133,23 @@ class Similarity_to_class(nn.Module):
     def __init__(self, in_nodes, num_classes):
         super().__init__()
 
-        self.rnn = nn.LSTM(in_nodes, in_nodes//2,  num_layers=3, dropout=0.2)
-        # self.Sequential = nn.Sequential(
-        #     nn.Linear(in_nodes//2, num_classes),
-        #     nn.Softmax(dim = 1)
-        # )
-        self.out = nn.Linear(in_nodes//2, num_classes)
-        nn.init.kaiming_normal_(self.out.weight, mode='fan_in', nonlinearity='selu')
+        self.fc1 =  Linear_Block(in_nodes, in_nodes//2)
+        self.fc2 = Linear_Block(in_nodes//2, in_nodes//4)
+        self.fc3 = Linear_Block(in_nodes//4, in_nodes//8)
+        self.lstm = nn.LSTM(in_nodes//8, num_classes, num_layers=3, dropout=0.2)
+        # self.out = nn.Linear(64, num_classes)
+        self.skip = nn.Linear(in_nodes, num_classes)
+       
 
 
     def forward(self, x):
-        x, hidden = self.rnn(x)
-        x = self.out(x) # logits
+        skip = self.skip(x)
+        x = self.fc1(x)
+        x = self.fc2(x)
+        x = self.fc3(x)
+        x, hidden = self.lstm(x)
+        x = x + skip
+        # x = self.out(x) + skip # logits
         return x
 
 

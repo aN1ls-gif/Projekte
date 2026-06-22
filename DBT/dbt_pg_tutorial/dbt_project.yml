@@ -1,0 +1,64 @@
+
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'dbt_pg_tutorial'
+config-version: 2 # ==2 neccessary for dbt to use the up to date version of interactin gwith the .yaml file
+version: '1.0.0'
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'dbt_pg_tutorial'
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+# these paths are always relativ, never absolute
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+# docs-paths: ["docs"] # should not be used unless proper documentation has been added to the directory. without it, dbt will take a look at all the other folders, their present files and comments to figure out the documentation
+# function-paths: ["functions"] # udfs / user-defined-functions
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target" # does not yet exist. gets created when the dbt pipeline is run
+  - "dbt_packages" # does not yet exist. gets created when the dbt pipeline is run
+
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+
+# In this example config, we tell dbt to build all models in the example/
+# directory as views. These settings can be overridden in the individual model
+# files using the `{{ config(...) }}` macro.
+models:
+# Config indicated by + and applies to all files under models/example/
+  dbt_pg_tutorial: # 
+    # +materialized: strategies for persisting dbt models in a warehouse
+    # +schema: the schema name to store the outputs under in the postgre database. Attention: the schema name will then be <profiles.yml schema>_<dbt_project.yml schema>, so "+schema: staging" leads to the schema "analytics_staging" as analytics has been set as the schema name for this project in the profiles.yml. Unlike the pre-definded schemas, these new schemas wont have permissions, leading to issues when +materialized is set to "table" instead of "view"
+    +materialized: view    # default; override per-model when needed
+    staging: # foundation where all individual components (the atoms) are combined to the more complex/ useful models in the project
+      # +schema: staging     # optional: place staging views in analytics_staging
+    intermediate: # where the "atoms" are put together into "molecules". they will exist here
+      # +schema: intermediate
+    marts: # atoms and molecules are combined into fully flegded cells. Aka entity/concept layer
+      +materialized: table
+      # +schema: marts
+
+
+# dbt_pg_tutorial/
+# |- sources.yml # source definitions as raw tables
+# |- staging/ # cleaned replicas of the sources
+# |   |- # all exists as views due to the overlying +materialized setting
+# |   |- stg_customers.sql
+# |   |- stg_oders.sql
+# |   |- stg_payments.sql
+# |- intermediate/ # buisness logic joins / operations
+# |   |- # all exists as views due to the overlying +materialized setting
+# |   |- int_order_payments.sql
+# |- marts/ # final dimensional models
+# |   |- # exist as tables, not view, due to the seperate +materialzed setting
+# |   |- dim_customers.sql
+# |   |- fct_orders.sql
