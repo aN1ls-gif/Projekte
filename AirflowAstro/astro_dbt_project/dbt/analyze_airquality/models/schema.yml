@@ -1,0 +1,66 @@
+version: 2
+
+models:
+  - name: stg_current
+    description: "Prepared the current air quality data"
+    columns:
+      - name: date
+        tests: [not_null]
+      - name: hour
+        tests: [not_null]
+
+  - name: stg_hourly
+    description: "Prepared the predicted air quality data"
+    columns:
+      - name: date
+        tests: [not_null]
+      - name: hour
+        tests: [not_null]
+
+  - name: int__prediction_average
+    description: "Isolated the predicted measurements from the predicted AQIs and calculated average on 12h windows"
+    columns:
+      - name: date
+        tests: [not_null]
+      - name: hour
+        tests: [not_null]
+
+  - name: int__quality_average
+    description: "Isolated the observed measurements from the calculated AQIs and calculated average on 12h windows"
+    columns:
+      - name: date
+        tests: [not_null]
+      - name: hour
+        tests: [not_null]
+
+  - name: int__prediction_danger
+    description: "Isolated the predicted AQIs from the predicted measurements and calculated average on 12h windows"
+    columns:
+      - name: date
+        tests: [not_null]
+      - name: hour
+        tests: [not_null]
+
+  - name: int__quality_danger
+    description: "Isolated the calculated AQIs from the observed measurements and calculated average on 12h windows"
+    columns:
+      - name: date
+        tests: [not_null]
+      - name: hour
+        tests: [not_null]
+
+  - name: mart__air_quality
+    description: "Combined the tables containg the 12hourly average observed and predicted measurements"
+    columns:
+      - name: date
+        tests: [not_null]
+      - name: hour
+        tests: [not_null]
+
+  - name: mart__air_quality_aqi
+    description: "Combined the tables containg the 12hourly average observed and predicted APIs"
+    columns:
+      - name: date
+        tests: [not_null]
+      - name: hour
+        tests: [not_null]

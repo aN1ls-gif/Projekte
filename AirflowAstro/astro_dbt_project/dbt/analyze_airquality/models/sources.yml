@@ -1,0 +1,11 @@
+version: 2 # again, we need version 2 of the software dbt is using to interact with the .yaml files
+
+sources:
+  - name: rawdata # Name setting. Free to choose
+    database: airflow_pipeline # the databse we want to use
+    schema: rawdata # the schema withing the database we want to use
+    tables: # the tables within the schema we want to use
+      - name: current
+      - name: current_temp
+      - name: hourly_temp
+      - name: hourly

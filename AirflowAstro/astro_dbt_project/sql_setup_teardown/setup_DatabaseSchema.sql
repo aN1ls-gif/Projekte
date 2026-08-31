@@ -1,0 +1,8 @@
+-- \c airflow_pipeline;
+CREATE SCHEMA IF NOT EXISTS rawdata AUTHORIZATION astrodbtuser;
+CREATE SCHEMA IF NOT EXISTS analytics AUTHORIZATION astrodbtuser;
+
+GRANT ALL ON SCHEMA rawdata, analytics TO astrodbtuser;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA rawdata GRANT ALL ON TABLES TO AstroDBTuser;
+ALTER DEFAULT PRIVILEGES IN SCHEMA analytics GRANT ALL ON TABLES TO AstroDBTuser;
