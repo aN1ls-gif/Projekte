@@ -17,24 +17,17 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 from cosmos import DbtTaskGroup, ProjectConfig, ProfileConfig, ExecutionConfig
 from cosmos.profiles import PostgresUserPasswordProfileMapping
 
+import task_defs
+
 
 
 data_url = "https://air-quality-api.open-meteo.com/v1/air-quality"
 non_aqi_params = ["pm10", "pm2_5", "nitrogen_dioxide", "sulphur_dioxide", "ozone"]
 aqi_params = ["european_aqi", "european_aqi_pm2_5", "european_aqi_pm10", "european_aqi_nitrogen_dioxide", "european_aqi_ozone", "european_aqi_sulphur_dioxide"]
 parameters = non_aqi_params + aqi_params
-data_params_current = {
+data_params = {
             "latitude": 51.218931,
             "longitude": 6.471359,
-            "current": parameters,
-            "timezone": "Europe/Berlin",
-            "past_days": 0}
-            
-
-data_params_hourly = {
-            "latitude": 51.218931,
-            "longitude": 6.471359,
-            "hourly": parameters,
             "timezone": "Europe/Berlin",
             "past_days": 0}
 
@@ -49,7 +42,7 @@ logger.addHandler(personal_log_handler)
 now = pendulum.now(tz = "Europe/Paris")
 # importing the database string directly leads to an error when using airflow.
 start_date = datetime.datetime(2026, 8, 25) #datetime.datetime.now() - datetime.timedelta(days = 1)
-end_date = datetime.datetime(2026, 8, 26) #datetime.datetime.now() + datetime.timedelta(days = 1)
+end_date = datetime.datetime(2026, 8, 31) #datetime.datetime.now() + datetime.timedelta(days = 1)
 
 
 
@@ -79,7 +72,7 @@ execution_config = ExecutionConfig(
 
 ## Note: start_date/ end_date must be datetime object, not date object
 @dag(
-    dag_id = "AirQualityPipeline_v6.7",
+    dag_id = "AirQualityPipeline_v6.9",
     description = "An example project using airflow and dbt for data-cleaning and basic plotting",
     schedule = "@daily",
     start_date = start_date, # set the date of yesterday so that the backfill is triggered
@@ -99,25 +92,9 @@ def AirQualityDag():
             """
             Fetch the current values from the air quality api and clean them.
             """
-            # dr: DagRunProtocol = kwargs["dag_run"]
-            # logical_date_time = dr.logical_date # datetime.datetime.strptime(dr.logical_date, r"%Y%m%dT%H%M&S")
-            logical_date_time = kwargs["logical_date"]
-            logger.debug(logical_date_time)
-            timediff = (now - logical_date_time).days + np.maximum((now - logical_date_time).hours//24, 1)
-            timediff = int(timediff) if timediff >= 0 else 0
-            timediff = timediff if timediff <= 92 else 92
-            
-            logger.debug(now)
-            logger.debug(f"past_days: {timediff}")
-
-            params = data_params_current.copy()
-            params["past_days"] = timediff
-
-
-            response = requests.get(data_url, params=params)
-            response.raise_for_status()
-            data = response.json()
-            current_data_dict = data.get("current", {})
+            data_params_current = data_params.copy()
+            data_params_current["current"] = parameters
+            current_data_dict = task_defs.fetch_data(logger = logger, current_datetime = now, fetch_params = data_params_current, fetch_url = data_url, mode = "current", **kwargs)
             return current_data_dict
 
 
@@ -127,25 +104,7 @@ def AirQualityDag():
             Remove rows containing NaNs from the current values. 
             Change the dtype of all columns to string (safest against data corruption/malformation of data)
             """
-            df = pd.DataFrame.from_dict(current_data_dict, orient = "index").T.drop(columns = ["interval"])
-            logger.debug(f"The columns of the df containing the observed values: {df.columns}")
-            total_samples = df.shape[0]
-            df.dropna(axis = 0, how = "all", inplace = True)
-            all_na_samples = total_samples - df.shape[0]
-            df.dropna(axis = 0, how = "any", inplace = True)
-            some_na_samples = total_samples - all_na_samples - df.shape[0]
-            rest_samples = df.shape[0]
-
-
-            log_text = f"The current values from the air quality api contained a total of {total_samples} values.\nAfter removing the {all_na_samples} samples containing only NaNs and the {some_na_samples} samples containing some NaNs,\nthe number of remaining samples is {rest_samples} ({rest_samples/total_samples:.2%} of the samples in the fetch)."
-            logger.info(log_text)
-            df = df.astype(str)
-
-            columns = list(df.columns)
-            logger.debug(columns)
-            change_index = columns.index("time")
-            columns[change_index] = "time_string"
-            df.columns = columns
+            df = task_defs.clean_data(logger = logger, data_dict = current_data_dict, mode = "current")
 
             pg_hook = PostgresHook(postgres_conn_id = CONNECTION_ID)
 
@@ -187,8 +146,6 @@ def AirQualityDag():
         df = fetch_data_current()
         clean_data_current(df)
         
-        
-        
 
 
     @task_group(group_id = "handle_hourly_pred_data")
@@ -201,22 +158,9 @@ def AirQualityDag():
             """
             Fetch the hourly values from the air quality api and clean them.
             """
-            # dr: DagRunProtocol = kwargs["dag_run"]
-            # logical_date_time = dr.logical_date # datetime.datetime.strptime(dr.logical_date, r"%Y%m%dT%H%M&S")
-            logical_date_time = kwargs["logical_date"]
-            logger.debug(logical_date_time)
-            timediff = (now - logical_date_time).days + np.maximum((now - logical_date_time).hours//24, 1)
-            timediff = int(timediff) if timediff >= 0 else 0
-            timediff = timediff if timediff <= 92 else 92
-
-            params = data_params_hourly.copy()
-            params["past_days"] = timediff
-
-
-            response = requests.get(data_url, params=params)
-            response.raise_for_status()
-            data = response.json()
-            hourly_data_dict = data.get("hourly", {})
+            data_params_hourly = data_params.copy()
+            data_params_hourly["hourly"] = parameters
+            hourly_data_dict = task_defs.fetch_data(logger = logger, current_datetime = now, fetch_params = data_params_hourly, fetch_url = data_url, mode = "hourly", **kwargs)
             return hourly_data_dict
 
         
@@ -228,24 +172,7 @@ def AirQualityDag():
             Seperate the "time" column into the date and the hour.
             Change the dtype of all columns to string (safest against data corruption/malformation of data)
             """
-            df = pd.DataFrame(hourly_data_dict)
-            logger.debug(f"The columns of the df containing the hourly predictions: {df.columns}")
-            total_samples = df.shape[0]
-            df.dropna(axis = 0, how = "all", inplace = True)
-            all_na_samples = total_samples - df.shape[0]
-            df.dropna(axis = 0, how = "any", inplace = True)
-            some_na_samples = total_samples - all_na_samples - df.shape[0]
-            rest_samples = df.shape[0]
-
-
-            log_text = f"The hourly values from the air quality api contained a total of {total_samples} values.\nAfter removing the {all_na_samples} samples containing only NaNs and the {some_na_samples} samples containing some NaNs,\nthe number of remaining samples is {rest_samples} ({rest_samples/total_samples:.2%} of the samples in the fetch)."
-            logger.info(log_text)
-            df = df.astype(str)
-
-            columns = list(df.columns)
-            change_index = columns.index("time")
-            columns[change_index] = "time_string"
-            df.columns = columns
+            df = task_defs.clean_data(logger = logger, data_dict = hourly_data_dict, mode = "hourly")
 
             pg_hook = PostgresHook(postgres_conn_id = CONNECTION_ID)
             
@@ -275,6 +202,7 @@ def AirQualityDag():
 
         df = fetch_data_hourly()
         clean_data_hourly(df)
+
 
 
     dbt_pipeline = DbtTaskGroup(
@@ -324,7 +252,7 @@ def AirQualityDag():
             logger.debug(f"Finished plot {i+1}.1")
 
             ax2 = ax.twinx()
-            lns2 = ax2.plot(air_quality.loc[:, "time"], air_quality.loc[:, f"AVG_{non_aqi_params[i-1]}"], label = "aqi index", color = "red")
+            lns2 = ax2.plot(air_quality.loc[:, "time"], air_quality.loc[:, f"AVG_{non_aqi_params[i-1]}"], label = "estimated concentration", color = "red")
             ax2.set_ylabel("Concentration [µg/m³]")
             logger.debug(f"Finished plot {i+1}.2")
 
@@ -335,29 +263,6 @@ def AirQualityDag():
         fig.suptitle("Average estimates of air quality")
         plt.savefig("/usr/local/airflow/Figures/air_quality.png")
         plt.close()
-
-
-        # ax = fig.add_subplot()
-        # air_quality.drop(columns = ["date", "hour"]).plot(
-        #     kind = "line", 
-        #     x = "time",
-        #     ax = ax,
-        #     subplots = False)
-        # #ax.vlines(logical_date_time, 0, np.max(air_quality), "b--")
-        # plt.savefig("/usr/local/airflow/Figures/air_quality.png")
-        # plt.close()
-
-
-        # fig = plt.figure(figsize = figsize)
-        # ax = fig.add_subplot()
-        # air_quality_aqi.drop(columns = ["date", "hour"]).plot(
-        #     kind = "line", 
-        #     x = "time",
-        #     ax = ax,
-        #     subplots = False)
-        # #ax.vlines(logical_date_time, 0, np.max(air_quality_aqi), "b--")
-        # plt.savefig("/usr/local/airflow/Figures/air_quality_aqi.png")
-        # plt.close()
 
         # Picutes are in the Docker container "scheduler". Retrieve them using the "cp" command
 
